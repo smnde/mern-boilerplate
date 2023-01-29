@@ -1,0 +1,95 @@
+version: '3.9'
+services:  
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: app-frontend
+    container_name: app-frontned
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "3000:3000"
+    restart: on-failure
+    networks:
+      - node-network
+    
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: app-backend
+    container_name: app-backend
+    command: /usr/src/app/node_modules/.bin/nodemon ./src/server.js
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    networks:
+      - node-network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  db1:
+    image: mongo:6.0
+    container_name: db-app1
+    volumes:
+      - ./mongo-data/db-app1:/data/db
+    ports:
+      - "27017:27017"
+    command: mongod --replSet rs0 --port 27017
+    networks:
+      - node-network
+
+  db2:
+    image: mongo:6.0
+    container_name: db-app2
+    volumes:
+      - ./mongo-data/db-app2:/data/db
+    ports:
+      - "27018:27018"
+    command: mongod --replSet rs0 --port 27018
+    networks:
+      - node-network
+  
+  db3:
+    image: mongo:6.0
+    container_name: db-app3
+    volumes:
+      - ./mongo-data/db-app3:/data/db
+    ports:
+      - "27019:27019"
+    command: mongod --replSet rs0 --port 27019
+    networks:
+      - node-network
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: app-server
+    container_name: app-server
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+     - node-network
+
+networks:
+  node-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+  node_modules:
+  web-root:
+    driver: local
