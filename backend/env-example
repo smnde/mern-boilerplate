@@ -3,7 +3,7 @@ PORT=5000
 
 ENV_MODE=development
 
-DB_URI=mongodb://pos-mongo1:27017,pos-mongo2:27018,pos-mongo3:27019/api?replicaSet=rs0
+DB_URI=mongodb://db-app1:27017,db-app2:27018,db-app3:27019/api?replicaSet=rs0
 DB_NAME=mern
 DB_HOST=localhost
 DB_PORT=27017

@@ -1,5 +1,5 @@
-version: '3.9'
-services:  
+version: "3.9"
+services:
   frontend:
     build:
       context: ./frontend
@@ -14,7 +14,7 @@ services:
     restart: on-failure
     networks:
       - node-network
-    
+
   backend:
     build:
       context: ./backend
@@ -54,19 +54,19 @@ services:
     volumes:
       - ./mongo-data/db-app2:/data/db
     ports:
-      - "27018:27018"
-    command: mongod --replSet rs0 --port 27018
+      - "27018:27017"
+    command: mongod --replSet rs0 --port 27017
     networks:
       - node-network
-  
+
   db3:
     image: mongo:6.0
     container_name: db-app3
     volumes:
       - ./mongo-data/db-app3:/data/db
     ports:
-      - "27019:27019"
-    command: mongod --replSet rs0 --port 27019
+      - "27019:27017"
+    command: mongod --replSet rs0 --port 27017
     networks:
       - node-network
 
@@ -82,7 +82,7 @@ services:
       - frontend
       - backend
     networks:
-     - node-network
+      - node-network
 
 networks:
   node-network:
